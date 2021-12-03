@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 'db_table': 'badminton"."appointment',
                 'managed': False,
             },
-        ),
+        ), 
         migrations.CreateModel(
             name='HourDetail',
             fields=[
