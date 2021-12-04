@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="text-center">Hello, world! {{uid}}</h1>
+<form url="/create" method="POST"> {% csrf_token %}
+    <div class="form-group" style="position: relative">
+      <label for="appointment_name">球約名稱</label>
+      <input type="text" class="form-control" name="name" id="name" aria-describedby="appointment name">
+    </div>
+    <div class="form-group date-relative" style="position: relative">
+      <label for="date">球約開始時間</label>
+      <input type="text" name="start_time" class="form-control datepicker" style="position: relative" id="starttime" value="02-16-2012">
+    </div>
+    <div class="form-group date-relative" style="position: relative">
+        <label for="date">球約結束時間</label>
+        <input type="text" name="end_time" class="form-control datepicker" style="position: relative" id="starttime" value="02-16-2012">
+      </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  <script>
+    $('.datepicker').datetimepicker();
+  </script>
+{% endblock  %}

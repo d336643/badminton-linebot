@@ -9,7 +9,7 @@ from django.db import models
 
 
 class Appointment(models.Model):
-    uid = models.BigIntegerField(primary_key=True)
+    uid = models.IntegerField(primary_key=True)
     step = models.IntegerField()
     starttime = models.TimeField(blank=True, null=True)
     endtime = models.TimeField(blank=True, null=True)
@@ -17,39 +17,35 @@ class Appointment(models.Model):
     name = models.TextField(blank=True, null=True)  # This field type is a guess.
 
     class Meta:
-        managed = False
         db_table = 'badminton"."appointment'
 
 
 class HourDetail(models.Model):
-    uid = models.BigIntegerField(primary_key=True)
-    appointment_id = models.BigIntegerField(blank=True, null=True)
+    uid = models.IntegerField(primary_key=True)
+    appointment_id = models.IntegerField(blank=True, null=True)
     court_cnt = models.IntegerField(blank=True, null=True)
     people_cnt = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'badminton"."hour_detail'
 
 
 class Invitation(models.Model):
-    uid = models.BigIntegerField(primary_key=True)
-    user_id = models.BigIntegerField(blank=True, null=True)
-    hour_detail_id = models.BigIntegerField(blank=True, null=True)
+    uid = models.IntegerField(primary_key=True)
+    user_id = models.IntegerField(blank=True, null=True)
+    hour_detail_id = models.IntegerField(blank=True, null=True)
     status = models.TextField(blank=True, null=True)  # This field type is a guess.
 
     class Meta:
-        managed = False
         db_table = 'badminton"."invitation'
 
 
 class User(models.Model):
-    uid = models.BigIntegerField(primary_key=True)
+    uid = models.IntegerField(primary_key=True)
     nickname = models.TextField(blank=True, null=True)  # This field type is a guess.
     role = models.TextField(blank=True, null=True)  # This field type is a guess.
     line_uid = models.TextField()  # This field type is a guess.
     avatar_url = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'badminton"."user'
