@@ -36,8 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # third party packages
+    # 'rest_framework',
+    
     # local apps
     'appointments.apps.AppointmentsConfig',
+    'richmenu.apps.RichmenuConfig'
 ]
 
 MIDDLEWARE = [
