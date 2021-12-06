@@ -35,6 +35,7 @@ def listView(request: HttpRequest):
     else:
         current_appointment = Appointment.objects.order_by('-starttime')[0]
         
+    print('current_appointment', current_appointment)
     apps_info = list(Appointment.objects.all().values('id','name'))
     for app_dict in apps_info:
         app_dict['selected'] = current_appointment.id == app_dict['id']
@@ -54,7 +55,7 @@ def listView(request: HttpRequest):
     users = list({myObject['id']:myObject for myObject in users}.values())
     for user_dict in users:
         uid = user_dict['id']
-        hdobjs = User.objects.get(id=uid).hourdetails
+        hdobjs = User.objects.get(id=uid).hourdetails.filter(appointment_id=current_appointment.id)
         hours = hdobjs.values_list('hour')
         hdid = hdobjs.values('id')[0]['id']
         status = Invitation.objects.get(hour_detail=hdid, user=uid).status
@@ -132,7 +133,6 @@ def createAppointment(request: HttpRequest):
         elif step == 5:
             # selected_hours = {uid: [hour1, hour2..], ...}
             selected_hours = {}
-            print(type(request.POST), request.POST)
             for k in request.POST.keys():
                 if k.split('_')[0] == 'uid':
                     selected_hours[int(k.split('_')[1])] = request.POST.getlist(k)    
