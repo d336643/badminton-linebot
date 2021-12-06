@@ -29,20 +29,21 @@ def formView(request: HttpRequest):
     return render(request, "appointments/form.html", {'current_step': 1})
 
 def listView(request: HttpRequest):
+    if not Appointment.objects.all().exists():
+      return render(request, "appointments/list.html", {'apps_info': [], 'hour_details': [], 'users': [], 'current_aid': 0})
+ 
     current_aid = request.GET.get('aid', None)
     if current_aid:
         current_appointment = Appointment.objects.get(id=current_aid)
     else:
         current_appointment = Appointment.objects.order_by('-starttime')[0]
         
-    print('current_appointment', current_appointment)
     apps_info = list(Appointment.objects.all().values('id','name'))
     for app_dict in apps_info:
         app_dict['selected'] = current_appointment.id == app_dict['id']
     
     
     hdobjs = current_appointment.hour_details.all()
-    
     hour_details = []
     users = []
     for hdobj in hdobjs:
@@ -51,7 +52,7 @@ def listView(request: HttpRequest):
                              "accepted_cnt": len(list(hdobj.invitation_set.filter(status='Accepted').values())),
                              "ratio": len(list(hdobj.invitation_set.filter(status='Accepted').values())) * 100 / hdobj.people_cnt})
         users += list(hdobj.user_set.values('id','nickname'))
-        
+
     users = list({myObject['id']:myObject for myObject in users}.values())
     for user_dict in users:
         uid = user_dict['id']
