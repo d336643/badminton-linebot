@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="mb-4">報名及邀請名單</h1>
+
+<form metho="GET" action="/web/list" class="mt-4">
+    <select class="form-control form-control-lg appointment-select" name="aid" placeholder="選擇球約名稱">
+        {% for app_info in apps_info %}
+            {% if  app_info.selected %}
+                <option value="{{app_info.id}}" selected>{{app_info.name}} {{app_info.id}}</option>
+            {% else %}
+                <option value="{{app_info.id}}">{{app_info.name}} {{app_info.id}}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</form>
+
+{% for data in hour_details %}
+    <div class="container mt-3">
+      <div>
+        <div>
+          <p class="m-0">{{data.hour}} 點({{data.accepted_cnt}}/{{data.people_cnt}})</p>
+        </div>
+        <div class="pt-1">
+          <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{data.ratio}}%" aria-valuenow="{{data.accepted_cnt}}" aria-valuemin="0" aria-valuemax="{{data.people_cnt}}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+<table class="table table-bordered mt-3">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">名字</th>
+        <th scope="col">時段</th>
+        <th scope="col">報名狀態</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <th scope="row">{{user.nickname}}</th>
+                <td>{{user.starthour}} - {{user.endhour}}</td>
+                <td>{{user.status}}</td>
+            </tr>
+        {% endfor %}
+      
+    </tbody>
+</table>
+
+<a class="btn btn-info mt-5" href="/web/invite_all?aid={{current_aid}}">送出邀請</a>
+
+<script>
+    document.querySelector('.appointment-select').addEventListener('change', (e) => {
+        document.querySelector('form').submit();
+    })
+</script>
+
+{% endblock  %}

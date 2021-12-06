@@ -6,14 +6,16 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
 
 
 class Appointment(models.Model):
-    uid = models.IntegerField(primary_key=True)
     step = models.IntegerField()
-    starttime = models.TimeField(blank=True, null=True)
-    endtime = models.TimeField(blank=True, null=True)
-    user_order_ls = models.TextField(blank=True, null=True)  # This field type is a guess.
+    starttime = models.DateTimeField(blank=True, null=True)
+    endtime = models.DateTimeField(blank=True, null=True)
+    hours = models.IntegerField(blank=True, null=True)
+    user_order_ls = ArrayField(models.IntegerField(),blank=True, null=True)
     name = models.TextField(blank=True, null=True)  # This field type is a guess.
 
     class Meta:
@@ -21,31 +23,28 @@ class Appointment(models.Model):
 
 
 class HourDetail(models.Model):
-    uid = models.IntegerField(primary_key=True)
-    appointment_id = models.IntegerField(blank=True, null=True)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, related_name='hour_details')
     court_cnt = models.IntegerField(blank=True, null=True)
     people_cnt = models.IntegerField(blank=True, null=True)
+    hour = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'badminton"."hour_detail'
 
-
-class Invitation(models.Model):
-    uid = models.IntegerField(primary_key=True)
-    user_id = models.IntegerField(blank=True, null=True)
-    hour_detail_id = models.IntegerField(blank=True, null=True)
-    status = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        db_table = 'badminton"."invitation'
-
-
 class User(models.Model):
-    uid = models.IntegerField(primary_key=True)
     nickname = models.TextField(blank=True, null=True)  # This field type is a guess.
     role = models.TextField(blank=True, null=True)  # This field type is a guess.
     line_uid = models.TextField()  # This field type is a guess.
     avatar_url = models.TextField(blank=True, null=True)
+    hourdetails = models.ManyToManyField(HourDetail, through='Invitation')
 
     class Meta:
         db_table = 'badminton"."user'
+
+class Invitation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    hour_detail = models.ForeignKey(HourDetail, on_delete=models.CASCADE, null=True)
+    status = models.TextField(blank=True, null=True)  # This field type is a guess.
+
+    class Meta:
+        db_table = 'badminton"."invitation'

@@ -1,25 +1,268 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if current_step == 1 %}
 
-<h1 class="text-center">Hello, world! {{uid}}</h1>
-<form url="/create" method="POST"> {% csrf_token %}
-    <div class="form-group" style="position: relative">
-      <label for="appointment_name">球約名稱</label>
-      <input type="text" class="form-control" name="name" id="name" aria-describedby="appointment name">
-    </div>
-    <div class="form-group date-relative" style="position: relative">
-      <label for="date">球約開始時間</label>
-      <input type="text" name="start_time" class="form-control datepicker" style="position: relative" id="starttime" value="02-16-2012">
-    </div>
-    <div class="form-group date-relative" style="position: relative">
-        <label for="date">球約結束時間</label>
-        <input type="text" name="end_time" class="form-control datepicker" style="position: relative" id="starttime" value="02-16-2012">
+  <h1 class="text-center">步驟1. 設定名字與選擇日期</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+      <div class="form-group" style="position: relative">
+        <label for="name">球約名稱</label>
+        <input type="text" class="form-control" name="appointment_name" id="name" aria-describedby="appointment name">
       </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="form-group date-relative" style="position: relative">
+        <label for="date">球約開始時間</label>
+        <input type="text" name="start_time" class="form-control datepicker" style="position: relative" id="starttime">
+      </div>
+      <div class="form-group date-relative" style="position: relative">
+          <label for="date">球約結束時間</label>
+          <input type="text" name="end_time" class="form-control datepicker" style="position: relative" id="starttime">
+        </div>
+      <button type="submit" name='step' value='1' class="btn btn-primary">保存</button>
+      <button type="submit" name='step' value='2' class="btn btn-primary">送出</button>
+    </form>
+
+  {% elif current_step == 2 %}
+
+  <h1 class="text-center">步驟2. 設定場次與人數({{date}})</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+    <input type="hidden" name="aid" value="{{ aid }}">
+    
+    {% for s in range %}
+      <div class="form-row">
+        <div class="col-12">
+          <label>Hour {{s}}</label>
+        </div>
+        <div class="col-6 mb-4">
+          <select class="custom-select court_cnt" data-hour="hour-{{forloop.counter}}" name="court_cnt_{{forloop.counter}}" required>
+            <option selected disabled value="">場數</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <div class="col-6 mb-4">
+          <input type="number" class="form-control people_cnt hour-{{forloop.counter}}" name="people_cnt_{{forloop.counter}}" value="" placeholder="人數" required>
+        </div>
+      </div>
+    {% endfor %}
+    <button type="submit" name='step' value='2' class="btn btn-primary">保存</button>
+    <button type="submit" name='step' value='3' class="btn btn-primary">送出</button>
   </form>
 
+  {% elif current_step == 3 %}
+  <h1 class="text-center">步驟3. 輸入已確定參加者名單({{date}})</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+    <input type="hidden" name="aid" value="{{ aid }}">
+    <div class="form-group">
+      <input id="search" class="form-control" placeholder="快速搜尋" type="text">
+    </div>
+    <div class="mb-4">
+      <table class="table table-bordered d-block">
+        <thead class="thead-light d-block">
+          <tr>
+            <th scope="col" class="text-center p-1 m-1">邀請</th>
+            <th scope="col" class="p-1 m-1">名字</th>
+          </tr>
+        </thead>
+        <tbody class="d-block">
+          {% for user in users %}
+            <tr>
+              <td class="p-1 m-1 text-center"><input type="checkbox" id="uid-{{user.id}}" name="uids" value="{{user.id}}" /></td>
+              <td class="p-1 m-1"><label class="m-0" for="uid-{{user.id}}">{{user.nickname}}</label></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <button type="submit" name='step' value='3' class="btn btn-primary">保存</button>
+    <button type="submit" name='step' value='4' class="btn btn-primary">送出</button>
+  </form>
+  
+  {% elif current_step == 4 %}
+
+  <h1 class="text-center">步驟4. 輸入已確定參加者打球時段</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+    <input type="hidden" name="aid" value="{{ aid }}">
+    
+    {% for user in users %}
+      <div class="form-row">
+        <div class="col-1 mr-4 d-flex align-items-center">
+          <label>{{user.nickname}}</label>
+        </div>
+        {% for hour in hours %}
+          <div class="form-row">
+            <div class="col-3 mr-3">
+              <input type="checkbox" class="btn-check" name="uid_{{user.id}}" value="{{hour}}" id="{{user.id}}-{{hour}}" autocomplete="off" />
+              <label class="btn btn-info" for="{{user.id}}-{{hour}}">{{hour}}</label>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" name='step' value='4' class="btn btn-primary">保存</button>
+    <button type="submit" name='step' value='5' class="btn btn-primary">送出</button>
+  </form>
+
+  {% elif current_step == 5 %}
+
+  <h1 class="text-center">步驟5. 設定邀請名單</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+    <input type="hidden" name="aid" value="{{ aid }}">
+    
+    {% for data in datum %}
+    <div class="container mb-2">
+      <div>
+        <div>
+          <p class="m-0">{{data.hour}} 點({{data.accepted_cnt}}/{{data.people_cnt}})</p>
+        </div>
+        <div class="pt-1">
+          <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{data.ratio}}%" aria-valuenow="{{data.accepted_cnt}}" aria-valuemin="0" aria-valuemax="{{data.people_cnt}}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    
+    <div class="form-group">
+      <input id="search" class="form-control" placeholder="快速搜尋" type="text">
+    </div>
+    <div class="mb-4">
+      <table class="table table-bordered d-block">
+        <thead class="thead-light d-block">
+          <tr>
+            <th scope="col" class="text-center p-1 m-1">邀請</th>
+            <th scope="col" class="p-1 m-1">名字</th>
+          </tr>
+        </thead>
+        <tbody class="d-block">
+          {% for user in users %}
+            <tr>
+              <td class="p-1 m-1 text-center"><input type="checkbox" id="uid-{{user.id}}" name="uids" value="{{user.id}}" /></td>
+              <td class="p-1 m-1"><label class="m-0" for="uid-{{user.id}}">{{user.nickname}}</label></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <button type="submit" name='step' value='5' class="btn btn-primary mt-2">保存</button>
+    <button type="submit" name='step' value='6' class="btn btn-primary">送出</button>
+  </form>
+
+
+  {% elif current_step == 6 %}
+
+  <h1 class="text-center">步驟6. 輸入邀請者的打球時段</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+    <input type="hidden" name="aid" value="{{ aid }}">
+    
+    {% for user in users %}
+      <div class="form-row">
+        <div class="col-1 mr-4 d-flex align-items-center">
+          <label>{{user.nickname}}</label>
+        </div>
+        {% for hour in hours %}
+          <div class="form-row">
+            <div class="col-3 mr-3">
+              <input type="checkbox" class="btn-check" name="uid_{{user.id}}" value="{{hour}}" id="{{user.id}}-{{hour}}" autocomplete="off" />
+              <label class="btn btn-info" for="{{user.id}}-{{hour}}">{{hour}}</label>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" name='step' value='6' class="btn btn-primary">保存</button>
+    <button type="submit" name='step' value='7' class="btn btn-primary">送出</button>
+  </form>
+
+  {% elif current_step == 7 %}
+
+  <h1 class="text-center">步驟7. 設定邀請者順序</h1>
+  <form action="/web/create" method="POST"> {% csrf_token %}
+    <input type="hidden" class='aid' name="aid" value="{{ aid }}">
+    <input type="hidden" class='aid' name="uids" id="uids" value="{{ uids }}">
+    <ul id="items" class="list-group mb-3">
+      {% for user in users %}
+        <li class="form-row item list-group-item d-flex justify-content-between align-items-center" data-uid="{{user.uid}}">
+          <div>
+            <p class="m-0 p-0">
+              <span class="order-number">{{forloop.counter}}</span>
+              選手: {{user.nickname}}
+              邀請時間：{{user.starthour}} - {{user.endhour}}
+            </p>
+          </div>
+          ↕
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% comment %} <button type="submit" name='step' value='6' class="btn btn-primary">保存</button> {% endcomment %}
+    <button type="submit" name='step' value='8' class="btn btn-primary">送出</button>
+  </form>
   <script>
-    $('.datepicker').datetimepicker();
+    $( "#items" ).sortable({
+      update: function() {
+        let i = 1;
+        document.querySelectorAll('.order-number').forEach(function(orderNumber) {
+          orderNumber.innerText = i;
+          i += 1;
+        })
+        let uids = [];
+        document.querySelectorAll('.item').forEach((item) => {
+          uids.push(item.dataset.uid);
+        })
+        document.querySelector('#uids').value = `${uids}`
+      }
+    });
+  </script>
+
+  {% else %}
+  
+  {% endif %}
+
+  <style>
+    tbody {
+      height: 60vh;
+      overflow: scroll;
+    }
+    table thead tr, table tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    tr td:first-child, tr th:first-child {
+      width: 30%;
+    }
+    td label {
+      width: 100%;
+    }
+  </style>
+  <script>
+    $('.datepicker').datetimepicker({
+      format: 'Y-m-d H:i',
+      value: new Date()
+    });
+
+    document.querySelectorAll('.court_cnt').forEach(function(cnt) {
+      cnt.addEventListener('change', function() {
+        document.querySelector(`.${cnt.dataset.hour}`).value = cnt.value * 6;
+      })
+    })
+    var $rows = $("tbody tr");
+    $("#search").keyup(function() {
+        var val = $.trim(this.value);
+        if (val === "")
+            $rows.show();
+        else {
+            $rows.hide();
+            $rows.has("td:contains(" + val + ")").show();
+        }
+    });
   </script>
 {% endblock  %}

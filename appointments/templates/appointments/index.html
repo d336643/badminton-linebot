@@ -2,6 +2,14 @@
 
 {% block content %}
 
-<h1 class="text-center">Hello, world! {{uid}}</h1>
-
+<h1 class="text-center mt-3">已建立的球約</h1>
+<ul class="list-group mt-3">
+    {% for app_info in apps_info %}
+        <li class="list-group-item d-flex justify-content-between">
+            🙉
+            {{app_info.date}} {{ app_info.name}}
+            <a href="/web/invite_all?aid={{app_info.aid}}">送出邀請</a>
+        </li>
+    {% endfor %}
+</ul>
 {% endblock  %}             
