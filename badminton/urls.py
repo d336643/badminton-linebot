@@ -21,3 +21,4 @@ urlpatterns = [
     path('web/', include('appointments.urls')),
     path('line/', include('line.urls')),
 ]
+

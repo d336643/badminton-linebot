@@ -8,9 +8,9 @@
     <select class="form-control form-control-lg appointment-select" name="aid" placeholder="選擇球約名稱">
         {% for app_info in apps_info %}
             {% if  app_info.selected %}
-                <option value="{{app_info.id}}" selected>{{app_info.name}} {{app_info.id}}</option>
+                <option value="{{app_info.id}}" selected>{{app_info.name}}</option>
             {% else %}
-                <option value="{{app_info.id}}">{{app_info.name}} {{app_info.id}}</option>
+                <option value="{{app_info.id}}">{{app_info.name}}</option>
             {% endif %}
         {% endfor %}
     </select>

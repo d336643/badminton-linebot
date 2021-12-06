@@ -97,8 +97,8 @@ def createAppointment(request: HttpRequest):
             starthour = appointment.starttime.hour
             hours = [starthour+h for h in range(appointment.hours)]
             
-            delete_hds = HourDetail.objects.filter(appointment_id=aid).exclude(hour__in=hours)
-            delete_hds.delete()
+            # delete_hds = HourDetail.objects.filter(appointment_id=aid).exclude(hour__in=hours)
+            # delete_hds.delete()
             
             for i,h in enumerate(hours, start=1):
                 hd = HourDetail.objects.get_or_create(appointment_id=aid, hour=h)[0]
@@ -142,7 +142,7 @@ def createAppointment(request: HttpRequest):
             # search hd_ids
             hour_objs = HourDetail.objects.filter(appointment_id=aid)
             for uid, hours in selected_hours.items():
-                Invitation.objects.filter(user_id=uid).exclude(hour_detail_id__in=hour_objs.filter(hour__in=hours).values_list('id')).delete()
+                # Invitation.objects.filter(user_id=uid).exclude(hour_detail_id__in=hour_objs.filter(hour__in=hours).values_list('id')).delete()
                 for hour in hours:
                     hd_id = hour_objs.get(hour=hour).id
                     invitation = Invitation.objects.get_or_create(user_id=uid, hour_detail_id=hd_id)[0]
@@ -196,7 +196,7 @@ def createAppointment(request: HttpRequest):
             # search hd_ids
             hour_objs = HourDetail.objects.filter(appointment_id=aid)
             for uid, hours in selected_hours.items():
-                Invitation.objects.filter(user_id=uid).exclude(hour_detail_id__in=hour_objs.filter(hour__in=hours).values_list('id')).delete()
+                # Invitation.objects.filter(user_id=uid).exclude(hour_detail_id__in=hour_objs.filter(hour__in=hours).values_list('id')).delete()
                 for hour in hours:
                     hd_id = hour_objs.get(hour=hour).id
                     invitation = Invitation.objects.get_or_create(user_id=uid, hour_detail_id=hd_id)[0]
