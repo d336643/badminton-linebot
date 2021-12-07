@@ -7,9 +7,9 @@ from django.views.decorators.http import require_http_methods
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseBadRequest
 
-from linebot import LineBotApi, WebhookParser, WebhookHandler
-from linebot.exceptions import InvalidSignatureError, LineBotApiError
-from linebot.models import MessageEvent, TextSendMessage, FlexSendMessage, TextMessage, LocationSendMessage, PostbackEvent, FollowEvent, UnfollowEvent
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextSendMessage, TextMessage, LocationSendMessage, PostbackEvent, FollowEvent, UnfollowEvent
 
 
 from appointments.models import User, Appointment, HourDetail, Invitation

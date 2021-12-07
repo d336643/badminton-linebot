@@ -6,9 +6,7 @@ from django.http.response import HttpResponse, HttpResponseBadRequest
 
 from decouple import config
 from linebot import LineBotApi
-## euni RichMenu 名字要改，跟linebot 的 sdk 重複了
-## 並且要新增 rich_menu_id 的欄位
-from linebot.models import RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, URIAction
+from linebot.models import RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, URIAction, MessageAction
 from richmenu.models import Richmenu
 line_bot_api = LineBotApi(config('LINE_CHANNEL_ACCEESS_TOKEN'))
 
@@ -27,9 +25,9 @@ def createRichmenu(request: HttpRequest):
                     RichMenuArea(bounds=RichMenuBounds(x=0, y=0, width=833, height=843),
                                     action=URIAction(label='發起球約邀請', uri='https://badminton-linebot.herokuapp.com/web/form')),
                     RichMenuArea(bounds=RichMenuBounds(x=833, y=0, width=833, height=843),
-                                    action=URIAction(label='編輯球約邀請', uri='https://badminton-linebot.herokuapp.com/web/index')),
+                                    action=URIAction(label='查看所有球約', uri='https://badminton-linebot.herokuapp.com/web/index')),
                                     RichMenuArea(bounds=RichMenuBounds(x=1663, y=0, width=833, height=843),
-                                    action=URIAction(label='編輯球約邀請', uri='https://badminton-linebot.herokuapp.com/web/list'))
+                                    action=URIAction(label='查看報名表單', uri='https://badminton-linebot.herokuapp.com/web/list'))
                 ]
             )
             rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
@@ -49,7 +47,7 @@ def createRichmenu(request: HttpRequest):
                     RichMenuArea(bounds=RichMenuBounds(x=833, y=0, width=833, height=843),
                                     action=URIAction(label='查看報名表單', uri='https://badminton-linebot.herokuapp.com/web/list')),
                                     RichMenuArea(bounds=RichMenuBounds(x=1663, y=0, width=833, height=843),
-                                    action=URIAction(label='更改暱稱', uri='https://badminton-linebot.herokuapp.com/web/list'))
+                                    action=MessageAction(label='更改暱稱', text='此功能未開啟'))
                 ]
             )
             rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
