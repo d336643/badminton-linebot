@@ -45,7 +45,7 @@ def createRichmenu(request: HttpRequest):
                     RichMenuArea(bounds=RichMenuBounds(x=0, y=0, width=833, height=843),
                                     action=URIAction(label='私訊團主', uri='https://line.me/ti/p/0arAve3Q6R')),
                     RichMenuArea(bounds=RichMenuBounds(x=833, y=0, width=833, height=843),
-                                    action=URIAction(label='查看報名表單', uri='https://badminton-linebot.herokuapp.com/web/list')),
+                                    action=MessageAction(label='查看報名表單', text='此功能未開啟')),
                                     RichMenuArea(bounds=RichMenuBounds(x=1663, y=0, width=833, height=843),
                                     action=MessageAction(label='更改暱稱', text='此功能未開啟'))
                 ]
