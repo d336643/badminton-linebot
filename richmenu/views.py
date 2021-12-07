@@ -52,6 +52,4 @@ def createRichmenu(request: HttpRequest):
             )
             rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
             line_bot_api.set_rich_menu_image(rich_menu_id, 'image/png', open('image/user.png', 'rb'))
-            Richmenu(name='使用者選單', token= rich_menu_id, role='user', urls=['https://line.me/ti/p/0arAve3Q6R',
-                                                                              'https://badminton-linebot.herokuapp.com/web/list',
-                                                                              'https://badminton-linebot.herokuapp.com/web/list']).save()
+            Richmenu(name='使用者選單', token= rich_menu_id, role='user', urls=['https://line.me/ti/p/0arAve3Q6R']).save()
