@@ -7,7 +7,7 @@
   <form action="/web/create" method="POST"> {% csrf_token %}
       <div class="form-group" style="position: relative">
         <label for="name">球約名稱</label>
-        <input type="text" class="form-control" name="appointment_name" id="name" aria-describedby="appointment name">
+        <input type="text" class="form-control" name="appointment_name" id="name" aria-describedby="appointment name" required>
       </div>
       <div class="form-group date-relative" style="position: relative">
         <label for="date">球約開始時間</label>

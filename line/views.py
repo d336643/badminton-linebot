@@ -137,7 +137,7 @@ def handl_follow(event: FollowEvent):
         rich_menu_id = 'richmenu-9ea9e3e9224968fac96b594ebc18bde8'
         line_bot_api.link_rich_menu_to_user(event.source.user_id, rich_menu_id)
         line_bot_api.reply_message(reply_token=event.reply_token,
-                                   messages=TextSendMessage(text="你好～\n歡迎加入 Testbot~"))
+                                   messages=TextSendMessage(text="你好～\n歡迎加入「老楊揪打球」，團主老楊會邀請你參加指定時段的球約\n你可以接受/拒絕邀請！\n\n選單可以查看報名狀況，以及私訊團主！"))
 
 @handler.add(event=UnfollowEvent)
 def handl_follow(event: UnfollowEvent):

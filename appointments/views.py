@@ -214,7 +214,7 @@ def createAppointment(request: HttpRequest):
                 u['uid'] = user.id
                 uids.append(str(user.id))
                 u['nickname'] = user.nickname  
-                hours = user.hourdetails.values_list('hour')  
+                hours = user.hourdetails.filter(appointment_id=aid).values_list('hour')  
                 u['starthour'] = min(hours)[0]
                 u['endhour'] = max(hours)[0]+1
                     

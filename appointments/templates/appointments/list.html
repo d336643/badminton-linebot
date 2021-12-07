@@ -50,8 +50,9 @@
       
     </tbody>
 </table>
-
-<a class="btn btn-info mt-5" href="/web/invite_all?aid={{current_aid}}">送出邀請</a>
+{% if current_aid != 0 %}
+  <a class="btn btn-info mt-5" href="/web/invite_all?aid={{current_aid}}">送出邀請</a>
+{% endif %}
 
 <script>
     document.querySelector('.appointment-select').addEventListener('change', (e) => {
